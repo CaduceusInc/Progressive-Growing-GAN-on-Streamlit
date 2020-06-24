@@ -12,6 +12,26 @@ import feature_axis
 import tfutil
 import tfutil_cpu
 
+
+USE_GPU = False
+FEATURE_DIRECTION_FILE = "feature_direction_2018102_044444.pkl"
+MODEL_FILE_GPU = "karras2018iclr-celebahq-1024x1024-condensed.pkl"
+MODEL_FILE_CPU = "karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl"
+EXTERNAL_DEPENDENCIES = {
+    "feature_direction_2018102_044444.pkl" : {
+        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/feature_direction_20181002_044444.pkl",
+        "size": 164742
+    },
+    "karras2018iclr-celebahq-1024x1024-condensed.pkl": {
+        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/karras2018iclr-celebahq-1024x1024-condensed.pkl",
+        "size": 92338293
+    },
+    "karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl": {
+        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl",
+        "size": 92340233
+    }
+}
+
 # This should not be hashed by Streamlit when using st.cache.
 TL_GAN_HASH_FUNCS = {
     tf.Session : id
@@ -30,7 +50,7 @@ def main():
     st.sidebar.title('Features')
     seed = 27834096
     # If the user doesn't want to select which features to control, these will be used.
-    default_control_features = ['Young','Smiling','Male', 'Sunglasses']
+    default_control_features = ['Young','Smiling','Male']
     if st.sidebar.checkbox('Show advanced options'):
         # Randomly initialize feature values. 
         features = get_random_features(feature_names, seed)
@@ -163,24 +183,7 @@ def generate_image(session, pg_gan_model, tl_gan_model, features, feature_names)
         images = images.transpose(0, 2, 3, 1)  # NCHW => NHWC
     return images[0]
 
-USE_GPU = False
-FEATURE_DIRECTION_FILE = "feature_direction_2018102_044444.pkl"
-MODEL_FILE_GPU = "karras2018iclr-celebahq-1024x1024-condensed.pkl"
-MODEL_FILE_CPU = "karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl"
-EXTERNAL_DEPENDENCIES = {
-    "feature_direction_2018102_044444.pkl" : {
-        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/feature_direction_20181002_044444.pkl",
-        "size": 164742
-    },
-    "karras2018iclr-celebahq-1024x1024-condensed.pkl": {
-        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/karras2018iclr-celebahq-1024x1024-condensed.pkl",
-        "size": 92338293
-    },
-    "karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl": {
-        "url": "https://streamlit-demo-data.s3-us-west-2.amazonaws.com/facegan/karras2018iclr-celebahq-1024x1024-condensed-cpu.pkl",
-        "size": 92340233
-    }
-}
+
 
 if __name__ == "__main__":
     main()
